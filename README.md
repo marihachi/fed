@@ -1,2 +1,2 @@
 # fed
-A implementation of interoperable federation protocol for multiple services.
+A interoperable federation protocol for multiple services.
