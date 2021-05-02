@@ -1,0 +1,23 @@
+{
+  "name": "fed",
+  "version": "0.1.0",
+  "description": "A interoperable federation protocol for multiple application servers.",
+  "main": "built/index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marihachi/fed.git"
+  },
+  "author": "marihachi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/marihachi/fed/issues"
+  },
+  "homepage": "https://github.com/marihachi/fed#readme"
+}
