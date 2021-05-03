@@ -1,5 +1,5 @@
 # fed
-A interoperable federation protocol for multiple application servers.
+An interoperable general-purpose server-to-server protocol.
 
 ## License
 MIT
