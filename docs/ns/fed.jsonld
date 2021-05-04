@@ -1,0 +1,7 @@
+{
+	"@context": {
+		"fed": "https://marihachi.github.io/fed/ns/fed#",
+		"Create": "fed:Create",
+		"Delete": "fed:Delete"
+	}
+}
