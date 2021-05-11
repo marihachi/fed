@@ -1,0 +1,91 @@
+{
+  "$schema": "./config-schema.json",
+  "services": [
+    {
+      "name": "Microblog",
+      "components": [
+        "http://example.com",
+        {
+          "name": "Notes",
+          "objects": [
+            {
+              "name": "Note",
+              "props": [
+                {
+                  "name": "url",
+                  "type": "string"
+                },
+                {
+                  "name": "text",
+                  "type": "string"
+                },
+                {
+                  "name": "userId",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "name": "Subscribe"
+            },
+            {
+              "name": "Unsubscribe"
+            }
+          ],
+          "events": [
+            {
+              "name": "NoteCreated"
+            },
+            {
+              "name": "NoteDeleted"
+            },
+            {
+              "name": "NoteUpdated"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "serviceA",
+      "components": [
+        {
+          "name": "componentA",
+          "objects": [
+            {
+              "name": "objectA",
+              "props": [
+                {
+                  "name": "propA",
+                  "type": "string"
+                },
+                {
+                  "name": "propB",
+                  "type": "string"
+                }
+              ]
+            }
+          ],
+          "actions": [
+            {
+              "name": "actionA"
+            },
+            {
+              "name": "actionB"
+            }
+          ],
+          "events": [
+            {
+              "name": "eventA"
+            },
+            {
+              "name": "eventB"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

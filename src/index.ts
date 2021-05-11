@@ -2,7 +2,6 @@ import Koa from 'koa';
 import KoaRouter from '@koa/router';
 import httpSignature, { ParsedSignature } from 'http-signature';
 import { validateUrl } from './misc/validate-url';
-import $ from 'cafy';
 
 async function entry() {
 
