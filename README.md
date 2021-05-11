@@ -1,5 +1,5 @@
 # fed
-An interoperable general-purpose server-to-server protocol.
+An interoperable and extensible server-to-server protocol.
 
 ## License
 MIT
