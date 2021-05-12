@@ -1,0 +1,81 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "services": { "$ref": "#/definitions/services" }
+  },
+  "required": [],
+
+  "definitions": {
+    "services": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/service" }
+    },
+    "service": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "components": { "$ref": "#/definitions/components" }
+      },
+      "required": ["name"]
+    },
+    "components": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/component" }
+    },
+    "component": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "objects": { "$ref": "#/definitions/componentObjects" },
+        "actions": { "$ref": "#/definitions/componentActions" },
+        "events": { "$ref": "#/definitions/componentEvents" }
+      },
+      "required": ["name"]
+    },
+    "componentObjects": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/componentObject" }
+    },
+    "componentObject": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "props": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "minLength": 1 },
+              "type": { "enum": ["string"] }
+            },
+            "required": ["name", "type"]
+          }
+        }
+      },
+      "required": ["name"]
+    },
+    "componentActions": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/componentAction" }
+    },
+    "componentAction": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "required": ["name"]
+    },
+    "componentEvents": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/componentEvent" }
+    },
+    "componentEvent": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "minLength": 1 }
+      },
+      "required": ["name"]
+    }
+  }
+}

@@ -1,10 +1,12 @@
-import Ajv from 'ajv';
+import Ajv, { ValidateFunction } from 'ajv';
+import { err, ok } from './misc/result';
 
 type ServerInfo = {
 	capabilites: string[];
 };
 
-type FedSchema = {
+
+type FedDescription = {
 	services?: FedSchemaService[];
 };
 
@@ -38,23 +40,42 @@ type FedSchemaAction = {
 	name: string;
 };
 
-function entry() {
-	const schema: Record<string, any> = require('../json/config-schema.json');
-	const data = require('../json/config.json');
-	
-	const ajv = new Ajv();
-	const validate = ajv.compile(schema);
-	const valid = validate(data);
-	console.log('valid:', valid);
-	if (!valid) {
-		console.log('errors:', validate.errors);
-		return;
+class Fed {
+	private validateSchema: ValidateFunction;
+
+	constructor() {
+		const schema = require('../json/descriptor-schema.json');
+		const ajv = new Ajv();
+		this.validateSchema = ajv.compile(schema);
 	}
 
-	const fedSchema = data as FedSchema;
+	loadDescription(src: object) {
+		if (typeof src == 'string') {
+			src = JSON.parse(src) ;
+		}
+		const valid = this.validateSchema(src);
+		if (!valid) {
+			return err('invalid-description-data');
+		}
 
-	if (fedSchema.services) {
-		for (const service of fedSchema.services) {
+		return ok(src as FedDescription);
+	}
+}
+
+function entry() {
+	const fed = new Fed();
+
+	const data = require('../json/descriptor.json');
+	const loadResult = fed.loadDescription(data);
+	if (!loadResult.success) {
+		console.log('loading error:', loadResult.err);
+		return;
+	}
+	const description = loadResult.value;
+	console.log('loaded');
+
+	if (description.services) {
+		for (const service of description.services) {
 			console.log('service:', service.name);
 			if (service.components) {
 				for (const component of service.components) {

@@ -1,10 +1,9 @@
 {
-  "$schema": "./config-schema.json",
+  "$schema": "./descriptor-schema.json",
   "services": [
     {
       "name": "Microblog",
       "components": [
-        "http://example.com",
         {
           "name": "Notes",
           "objects": [
@@ -49,7 +48,7 @@
       ]
     },
     {
-      "name": "serviceA",
+      "name": "users",
       "components": [
         {
           "name": "componentA",
