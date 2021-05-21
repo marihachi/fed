@@ -5,9 +5,11 @@
     "services": {
       "type": "array",
       "items": { "$ref": "#/definitions/service" }
-    }
+    },
+    "$schema": true
   },
   "required": [],
+  "additionalProperties": false,
 
   "definitions": {
     "service": {
@@ -22,7 +24,8 @@
           "items": { "$ref": "#/definitions/component" }
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "additionalProperties": false
     },
     "component": {
       "type": "object",
@@ -44,7 +47,8 @@
           "items": { "$ref": "#/definitions/componentEvent" }
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "additionalProperties": false
     },
     "componentObject": {
       "type": "object",
@@ -58,7 +62,8 @@
           "items": { "$ref": "#/definitions/componentObjectProp" }
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "additionalProperties": false
     },
     "componentObjectProp": {
       "type": "object",
@@ -71,7 +76,8 @@
           "enum": ["string"]
         }
       },
-      "required": ["name", "type"]
+      "required": ["name", "type"],
+      "additionalProperties": false
     },
     "componentAction": {
       "type": "object",
@@ -81,7 +87,8 @@
           "minLength": 1
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "additionalProperties": false
     },
     "componentEvent": {
       "type": "object",
@@ -89,9 +96,14 @@
         "name": {
           "type": "string",
           "minLength": 1
+        },
+        "payload": {
+          "type": "string",
+          "minLength": 1
         }
       },
-      "required": ["name"]
+      "required": ["name"],
+      "additionalProperties": false
     }
   }
 }
