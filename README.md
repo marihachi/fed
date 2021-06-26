@@ -12,7 +12,13 @@ npm run validate-schema
 ```
 
 ## Communication demo
-Run the demo using two shells.
+1. Generate a keypair.
+
+```
+npm run generate-keypair
+```
+
+2. Run the demo using two shells.
 
 start the receiver:
 ```
