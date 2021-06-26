@@ -5,18 +5,13 @@ type ServerInfo = {
 	capabilites: string[];
 };
 
-
 type FedDescription = {
-	services?: FedSchemaService[];
-};
-
-type FedSchemaService = {
-	name: string;
 	components?: (FedSchemaComponent | string)[];
 };
 
 type FedSchemaComponent = {
 	name: string;
+	serviceName: string;
 	objects?: FedSchemaObject[];
 	events?: FedSchemaEvent[];
 	actions?: FedSchemaAction[];
@@ -38,6 +33,7 @@ type FedSchemaEvent = {
 
 type FedSchemaAction = {
 	name: string;
+	payload?: string;
 };
 
 class Fed {
@@ -74,31 +70,27 @@ function entry() {
 	const description = loadResult.value;
 	console.log('loaded');
 
-	if (description.services) {
-		for (const service of description.services) {
-			console.log('service:', service.name);
-			if (service.components) {
-				for (const component of service.components) {
-					if (typeof component == 'string') {
-						console.log(' component url:', component);
+	if (description.components) {
+		for (const component of description.components) {
+			if (typeof component == 'string') {
+				console.log(' component url:', component);
+			}
+			else {
+				console.log(' service:', component.serviceName);
+				console.log(' component:', component.name);
+				if (component.objects) {
+					for (const obj of component.objects) {
+						console.log('  object:', obj.name);
 					}
-					else {
-						console.log(' component:', component.name);
-						if (component.objects) {
-							for (const obj of component.objects) {
-								console.log('  object:', obj.name);
-							}
-						}
-						if (component.actions) {
-							for (const action of component.actions) {
-								console.log('  action:', action.name);
-							}
-						}
-						if (component.events) {
-							for (const ev of component.events) {
-								console.log('  event:', ev.name);
-							}
-						}
+				}
+				if (component.actions) {
+					for (const action of component.actions) {
+						console.log('  action:', action.name);
+					}
+				}
+				if (component.events) {
+					for (const ev of component.events) {
+						console.log('  event:', ev.name);
 					}
 				}
 			}

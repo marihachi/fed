@@ -1,88 +1,82 @@
 {
   "$schema": "./descriptor-schema.json",
-  "services": [
+  "components": [
     {
-      "name": "Microblog",
-      "components": [
+      "name": "Notes",
+      "serviceName": "Microblog",
+      "objects": [
         {
-          "name": "Notes",
-          "objects": [
+          "name": "Note",
+          "props": [
             {
-              "name": "Note",
-              "props": [
-                {
-                  "name": "url",
-                  "type": "string"
-                },
-                {
-                  "name": "text",
-                  "type": "string"
-                },
-                {
-                  "name": "userId",
-                  "type": "string"
-                }
-              ]
-            }
-          ],
-          "actions": [
-            {
-              "name": "Subscribe"
+              "name": "url",
+              "type": "string"
             },
             {
-              "name": "Unsubscribe"
-            }
-          ],
-          "events": [
-            {
-              "name": "NoteCreated"
+              "name": "text",
+              "type": "string"
             },
             {
-              "name": "NoteDeleted"
-            },
-            {
-              "name": "NoteUpdated"
+              "name": "userId",
+              "type": "string"
             }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "Subscribe"
+        },
+        {
+          "name": "Unsubscribe"
+        }
+      ],
+      "events": [
+        {
+          "name": "NoteCreated",
+          "payload": "Note"
+        },
+        {
+          "name": "NoteDeleted"
+        },
+        {
+          "name": "NoteUpdated",
+          "payload": "Note"
         }
       ]
     },
     {
-      "name": "users",
-      "components": [
+      "name": "Users",
+      "serviceName": "Microblog",
+      "objects": [
         {
-          "name": "componentA",
-          "objects": [
+          "name": "objectA",
+          "props": [
             {
-              "name": "objectA",
-              "props": [
-                {
-                  "name": "propA",
-                  "type": "string"
-                },
-                {
-                  "name": "propB",
-                  "type": "string"
-                }
-              ]
-            }
-          ],
-          "actions": [
-            {
-              "name": "actionA"
+              "name": "propA",
+              "type": "string"
             },
             {
-              "name": "actionB"
-            }
-          ],
-          "events": [
-            {
-              "name": "eventA"
-            },
-            {
-              "name": "eventB"
+              "name": "propB",
+              "type": "string"
             }
           ]
+        }
+      ],
+      "actions": [
+        {
+          "name": "actionA"
+        },
+        {
+          "name": "actionB"
+        }
+      ],
+      "events": [
+        {
+          "name": "eventA"
+        },
+        {
+          "name": "eventB"
         }
       ]
     }

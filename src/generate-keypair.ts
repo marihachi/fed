@@ -10,7 +10,7 @@ type KeyPair = {
 
 function generateKeyPair(): Promise<KeyPair> {
 	const options: RSAKeyPairOptions<'pem', 'pem'> = {
-		modulusLength: 1024,
+		modulusLength: 2048,
 		publicKeyEncoding: {
 			type: 'spki',
 			format: 'pem'

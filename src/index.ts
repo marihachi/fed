@@ -2,8 +2,77 @@ import Koa from 'koa';
 import KoaRouter from '@koa/router';
 import httpSignature, { ParsedSignature } from 'http-signature';
 import { validateUrl } from './misc/validate-url';
+import Ajv, { ValidateFunction } from 'ajv';
+import { err, ok } from './misc/result';
+
+type ServerInfo = {
+	capabilites: string[];
+};
+
+type FedDescription = {
+	services?: FedSchemaService[];
+};
+
+type FedSchemaService = {
+	name: string;
+	components?: (FedSchemaComponent | string)[];
+};
+
+type FedSchemaComponent = {
+	name: string;
+	objects?: FedSchemaObject[];
+	events?: FedSchemaEvent[];
+	actions?: FedSchemaAction[];
+};
+
+type FedSchemaObject = {
+	name: string;
+	props?: FedSchemaObjectProp[];
+};
+
+type FedSchemaObjectProp = {
+	name: string;
+	type: string;
+};
+
+type FedSchemaEvent = {
+	name: string;
+};
+
+type FedSchemaAction = {
+	name: string;
+	payload?: string;
+};
+
+class Fed {
+	private validateSchema: ValidateFunction;
+
+	constructor() {
+		const schema = require('../json/descriptor-schema.json');
+		const ajv = new Ajv();
+		this.validateSchema = ajv.compile(schema);
+	}
+
+	loadDescription(src: object) {
+		if (typeof src == 'string') {
+			src = JSON.parse(src) ;
+		}
+		const valid = this.validateSchema(src);
+		if (!valid) {
+			return err('invalid-description-data');
+		}
+
+		return ok(src as FedDescription);
+	}
+}
 
 async function entry() {
+
+	const serverInfo: ServerInfo = {
+		capabilites: [
+			'Microblog'
+		]
+	};
 
 	let keypair: { publicKey: string, privateKey: string };
 	try {
@@ -21,7 +90,12 @@ async function entry() {
 		ctx.status = 200;
 	});
 
-	router.post('/fed/inbox', async ctx => {
+	router.get('/fed/meta', async ctx => {
+		ctx.body = JSON.stringify({});
+		ctx.status = 200;
+	});
+
+	router.post('/fed/port', async ctx => {
 
 		console.log('req headers:');
 		console.log(ctx.req.headers);
@@ -54,7 +128,7 @@ async function entry() {
 
 		console.log('valid signature');
 
-		ctx.body = 'hello';
+		ctx.body = 'ok';
 		ctx.status = 200;
 	});
 

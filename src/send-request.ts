@@ -1,4 +1,5 @@
 import { signRequest } from 'http-signature';
+import { readStream } from './misc/read-stream';
 import { request } from './misc/request';
 
 async function entry() {
@@ -10,7 +11,7 @@ async function entry() {
 		throw new Error('keypair is not generated.');
 	}
 
-	const res = await request('http://localhost:3000/fed/inbox', {
+	const res = await request('http://localhost:3000/fed/port', {
 		method: 'POST'
 	}, (req) => {
 		signRequest(req, {
@@ -28,11 +29,11 @@ async function entry() {
 
 	console.log('res header:');
 	console.log(res.headers);
-
-	console.log('status: ', res.statusCode);
+	console.log('status:', res.statusCode);
+	console.log('body:', await readStream(res));
 }
 
 entry()
 .catch(e => {
-	console.log(e);
+	console.log('err:', e);
 });
