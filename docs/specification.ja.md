@@ -19,8 +19,8 @@ fedで扱われる各種オブジェクトはJSON形式で配信される。
 ```ts
 interface Metadata {
   services: {
-		descriptorUrl: string;
-	}[]
+    descriptorUrl: string;
+  }[]
 }
 ```
 各サービスのdescriptorUrlフィールドには、サービス記述子が配信されているURLの文字列を指定する。
