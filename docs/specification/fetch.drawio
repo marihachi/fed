@@ -1,0 +1,35 @@
+<mxfile host="65bd71144e">
+    <diagram name="Fetch" id="QPxHfX_x04sE-Ow-UlVb">
+        <mxGraphModel dx="1160" dy="778" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" background="#FFFFFF" math="0" shadow="0">
+            <root>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-0"/>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-1" parent="6ujZ2PtzvDhvy63AlJKc-0"/>
+                <mxCell id="JN7lyxFbwyB9rdm59-tr-0" value="" style="rounded=0;whiteSpace=wrap;html=1;fillColor=default;" parent="6ujZ2PtzvDhvy63AlJKc-1" vertex="1">
+                    <mxGeometry x="50" y="30" width="380" height="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-9" value="Local&lt;br&gt;Server" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="6ujZ2PtzvDhvy63AlJKc-1" vertex="1">
+                    <mxGeometry x="70" y="80" width="100" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-10" value="Remote&lt;br&gt;Server" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fontColor=#333333;fillColor=#f5f5f5;strokeColor=#666666;" parent="6ujZ2PtzvDhvy63AlJKc-1" vertex="1">
+                    <mxGeometry x="250" y="80" width="100" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-11" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" parent="6ujZ2PtzvDhvy63AlJKc-10" vertex="1">
+                    <mxGeometry x="45" y="140" width="10" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-12" value="Fetch (HTTP GET)" style="html=1;verticalAlign=bottom;endArrow=block;entryX=0;entryY=0;fillColor=#f5f5f5;strokeColor=#666666;" parent="6ujZ2PtzvDhvy63AlJKc-1" source="6ujZ2PtzvDhvy63AlJKc-9" target="6ujZ2PtzvDhvy63AlJKc-11" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="54.666666666666515" y="220" as="sourcePoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-13" value="Return resource (HTTP 200)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;exitX=0;exitY=0.95;fillColor=#f5f5f5;strokeColor=#666666;" parent="6ujZ2PtzvDhvy63AlJKc-1" source="6ujZ2PtzvDhvy63AlJKc-11" target="6ujZ2PtzvDhvy63AlJKc-9" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="54.666666666666515" y="277" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="6ujZ2PtzvDhvy63AlJKc-20" value="Resource&lt;br&gt;created." style="text;html=1;strokeColor=#0e8088;fillColor=#b0e3e6;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" parent="6ujZ2PtzvDhvy63AlJKc-1" vertex="1">
+                    <mxGeometry x="325" y="140" width="80" height="40" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>
