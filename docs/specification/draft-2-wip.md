@@ -1,5 +1,3 @@
-# Server-to-server Resource Federation Protocol
-
 ## 概要
 この仕様では、サーバーが別のサーバー上のリソースを参照するためのプロトコルを規定します。
 
