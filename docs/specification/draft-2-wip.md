@@ -28,7 +28,7 @@
 
 - イベントを受け取ったサーバーは、リクエストを処理キューに追加して`202 Accepted`を返すか、
   処理キューに空きがない場合は`503 Service Unavailable`を返さなければいけません(MUST)。
-- `503 Service Unavailable`のレスポンスを受け取ったサーバーは、イベントを再送すべきです(SHOULD)。
+- `503 Service Unavailable`のレスポンスを受け取った場合は、そのイベントを再送すべきです(SHOULD)。
 
 ![event sequence](event.png)
 
