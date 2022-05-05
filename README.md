@@ -5,7 +5,7 @@ A server-to-server resource federation protocol
 
 [Newest draft](./docs/specification/draft-2/doc-wip.md).
 
-## Build
+## Build the reference implementation
 ```
 npm run build
 ```
