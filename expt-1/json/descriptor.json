@@ -47,7 +47,7 @@
     },
     {
       "name": "Users",
-      "serviceName": "Microblog",
+      "serviceName": "General",
       "objects": [
         {
           "name": "objectA",

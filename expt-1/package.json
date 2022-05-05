@@ -1,7 +1,7 @@
 {
   "name": "fed",
   "version": "0.1.0",
-  "description": "",
+  "description": "An interoperable general-purpose server-to-server protocol.",
   "main": "built/index.js",
   "directories": {
     "doc": "docs"

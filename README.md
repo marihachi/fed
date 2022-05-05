@@ -1,33 +1,13 @@
 # fed
-An interoperable and extensible server-to-server protocol.
+A server-to-server resource federation protocol
+
+[WIP] Drafts of specification are currently being created.
+
+[Newest draft](./specification/draft-2/doc).
 
 ## Build
 ```
 npm run build
-```
-
-## Schema validation demo
-```
-npm run validate-schema
-```
-
-## Communication demo
-1. Generate a keypair.
-
-```
-npm run generate-keypair
-```
-
-2. Run the demo using two shells.
-
-start the receiver:
-```
-npm run start
-```
-
-send the demo request to receiver:
-```
-npm run send-request
 ```
 
 ## License
