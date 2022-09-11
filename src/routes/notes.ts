@@ -10,45 +10,44 @@ export default function() {
 	const router = new Router();
 	const notes: Note[] = [];
 
-	// fetch a resource in this server
-	router.get('/notes/:id', async (ctx, next) => {
-		// validate id
-		if (!/^([0-9]|[1-9][0-9]+)$/.test(ctx.params.id)) {
+	router.get('/notes/:target', async (ctx, next) => {
+		const target = ctx.params.target;
+		let server: string | undefined, name: string;
+		let match = /^@(.+)@(.+)$/.exec(target);
+		if (match != null) {
+			name = match[1];
+			server = match[2];
+		}
+		else {
+			match = /^@(.+)$/.exec(target);
+			if (match != null) {
+				name = match[1];
+			}
+			else {
+				return await next();
+			}
+		}
+		const index = notes.findIndex(x => x.id == name && x.serverId == server);
+		if (index == -1) {
 			return await next();
 		}
+
+		ctx.body = {
+			id: notes[index].id,
+			text: notes[index].text,
+			serverId: notes[index].serverId,
+		};
+	});
+
+	// fetch a resource in this server
+	router.get('/port/notes/:id', async (ctx, next) => {
 		const id = ctx.params.id;
 
-		// get resource
 		const index = notes.findIndex(x => x.id == id && x.serverId == null);
 		if (index == -1) {
 			return await next();
 		}
 
-		// pack
-		ctx.body = {
-			id: notes[index].id,
-			text: notes[index].text,
-		};
-	});
-
-	// fetch a resource in remote servers
-	router.get('/:serverId/notes/:id', async (ctx, next) => {
-		// validate server
-		const serverId = ctx.params.serverId;
-
-		// validate id
-		if (!/^([0-9]|[1-9][0-9]+)$/.test(ctx.params.id)) {
-			return await next();
-		}
-		const id = ctx.params.id;
-
-		// get resource
-		const index = notes.findIndex(x => x.id == id && x.serverId == serverId);
-		if (index == -1) {
-			return await next();
-		}
-
-		// pack
 		ctx.body = {
 			id: notes[index].id,
 			text: notes[index].text,
@@ -56,34 +55,28 @@ export default function() {
 	});
 
 	// incoming update event
-	router.post('/:serverId/notes', async (ctx, next) => {
-		// validate server
+	router.post('/port/:serverId/notes', async (ctx, next) => {
 		const serverId = ctx.params.serverId;
 
-		// req body
 		if (ctx.request.body == null) {
 			ctx.status = 400;
 			return await next();
 		}
 		const noteSource = ctx.request.body as any;
 
-		// validate resource
 		if (noteSource == null || noteSource.id == null || noteSource.text == null) {
 			ctx.status = 400;
 			return await next();
 		}
 
-		// get resource
 		const index = notes.findIndex(x => x.id == noteSource.id && x.serverId == serverId);
 
-		// resource object
 		const note = {
 			id: noteSource.id,
 			text: noteSource.text,
 			serverId: serverId,
 		};
 
-		// update resource
 		if (index == -1) {
 			notes.push(note);
 		}
@@ -95,25 +88,16 @@ export default function() {
 	});
 
 	// incoming delete event
-	router.delete('/:serverId/notes/:id', async (ctx, next) => {
-		// validate server
+	router.delete('/port/:serverId/notes/:id', async (ctx, next) => {
 		const serverId = ctx.params.serverId;
-
-		// validate id
-		if (!/^([0-9]|[1-9][0-9]+)$/.test(ctx.params.id)) {
-			ctx.status = 400;
-			return await next();
-		}
 		const id = ctx.params.id
 
-		// get resource
 		const index = notes.findIndex(x => x.id == id && x.serverId == serverId);
 		if (index == -1) {
 			ctx.status = 404;
 			return await next();
 		}
 
-		// delete resource
 		notes.splice(index, 1);
 
 		ctx.body = { deleted: true };
