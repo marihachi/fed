@@ -22,6 +22,8 @@
   "homepage": "https://github.com/marihachi/fed#readme",
   "dependencies": {
     "@koa/router": "12.0.0",
+    "@sinclair/typebox": "0.24.41",
+    "ajv": "^8.11.0",
     "koa": "2.13.4",
     "koa-bodyparser": "4.3.0",
     "mkdirp": "1.0.4"
