@@ -1,6 +1,41 @@
+import Koa from 'koa';
 import Router from '@koa/router';
 import Ajv from 'ajv';
-import { Static, Type } from '@sinclair/typebox';
+import { Type } from '@sinclair/typebox';
+import { v4 as uuid } from 'uuid';
+
+class ResponseBuilder {
+	ctx: Koa.Context;
+
+	constructor(ctx: ResponseBuilder['ctx']) {
+		this.ctx = ctx;
+	}
+
+	success(status: number, body: unknown) {
+		this.ctx.body = body;
+		this.ctx.status = status;
+	}
+
+	error(status: number, message: string) {
+		this.ctx.body = { error: message };
+		this.ctx.status = status;
+	}
+}
+
+type Note = {
+	id: string,
+	text: string,
+	serverId?: string;
+};
+
+const localNoteUpdateSchema = Type.Object({
+	text: Type.String(),
+});
+
+const remoteNoteUpdateSchema = Type.Object({
+	id: Type.String(),
+	text: Type.String(),
+});
 
 // <client APIs>
 // POST   /notes
@@ -12,48 +47,38 @@ import { Static, Type } from '@sinclair/typebox';
 // POST   /remote/notes
 // DELETE /remote/notes/:id
 
-type Note = {
-	id: string,
-	text: string,
-	serverId?: string;
-};
-
 export default function() {
 	const router = new Router();
 	const notes: Note[] = [];
 	const ajv = new Ajv();
 
 	// create a resource
-	const localNoteUpdateSchema = Type.Object({
-		id: Type.String(),
-		text: Type.String(),
-	});
-	router.post('/notes', async (ctx, next) => {
-		if (!ajv.validate(localNoteUpdateSchema, ctx.request.body)) {
-			ctx.body = { error: 'invalid-params' };
-			ctx.status = 400;
-			return;
-		}
-		const body = ctx.request.body as Static<typeof localNoteUpdateSchema>;
+	router.post('/notes', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
 
-		const index = notes.findIndex(x => x.id == body.id && x.serverId == null);
+		if (!ajv.validate(localNoteUpdateSchema, ctx.request.body)) {
+			return builder.error(400, 'invalid-params');
+		}
+		const body = ctx.request.body;
+
+		const noteId = uuid();
+		const index = notes.findIndex(x => x.id == noteId && x.serverId == null);
 		if (index != -1) {
-			ctx.body = { error: 'resource-already-exists' };
-			ctx.status = 400;
-			return;
+			return builder.error(400, 'resource-already-exists');
 		}
 		const note: Note = {
-			id: body.id,
+			id: noteId,
 			text: body.text,
 		};
 		notes.push(note);
 
-		ctx.body = note;
-		ctx.status = 200;
+		builder.success(200, note);
 	});
 
 	// get a resource
-	router.get('/notes/:target', async (ctx, next) => {
+	router.get('/notes/:target', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
+
 		const target = ctx.params.target;
 		let server: string | undefined, name: string;
 		let match = /^([^@]+)@([^@]+)$/.exec(target);
@@ -66,62 +91,57 @@ export default function() {
 		}
 		const index = notes.findIndex(x => x.id == name && x.serverId == server);
 		if (index == -1) {
-			return await next();
+			return builder.error(404, 'not-found');
 		}
 
-		ctx.body = {
+		builder.success(200, {
 			id: notes[index].id,
 			text: notes[index].text,
 			serverId: notes[index].serverId,
-		};
-		ctx.status = 200;
+		});
 	});
 
 	// delete a resource
-	router.delete('/notes/:id', async (ctx, next) => {
+	router.delete('/notes/:id', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
 		const id = ctx.params.id;
 
 		const index = notes.findIndex(x => x.id == id && x.serverId == null);
 		if (index == -1) {
-			return await next();
+			return builder.error(404, 'not-found');
 		}
 		notes.splice(index, 1);
 
-		ctx.body = { deleted: true };
-		ctx.status = 200;
+		builder.success(200, { deleted: true });
 	});
 
 	// outgoing: fetch a resource in local server (need server-authentication)
-	router.get('/local/notes/:id', async (ctx, next) => {
+	router.get('/local/notes/:id', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
+		//const signature = ctx.request.header.signature;
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
 
 		const index = notes.findIndex(x => x.id == id && x.serverId == null);
 		if (index == -1) {
-			return await next();
+			return builder.error(404, 'not-found');
 		}
 
-		ctx.body = {
+		builder.success(200, {
 			id: notes[index].id,
 			text: notes[index].text,
-		};
-		ctx.status = 200;
+		});
 	});
 
 	// incoming: update resource event (need server-authentication)
-	const noteUpdateSchema = Type.Object({
-		id: Type.String(),
-		text: Type.String(),
-	});
-	router.post('/remote/notes', async (ctx, next) => {
+	router.post('/remote/notes', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
 		const serverId = 'b'; // TODO: authentication
 
-		if (!ajv.validate(noteUpdateSchema, ctx.request.body)) {
-			ctx.body = { error: 'invalid-params' };
-			ctx.status = 400;
-			return;
+		if (!ajv.validate(remoteNoteUpdateSchema, ctx.request.body)) {
+			return builder.error(400, 'invalid-params');
 		}
-		const body = ctx.request.body as Static<typeof noteUpdateSchema>;
+		const body = ctx.request.body;
 
 		const index = notes.findIndex(x => x.id == body.id && x.serverId == serverId);
 		const note: Note = {
@@ -136,23 +156,22 @@ export default function() {
 			notes[index] = note;
 		}
 
-		ctx.body = note;
-		ctx.status = 200;
+		builder.success(200, note);
 	});
 
 	// incoming: delete resource event (need server-authentication)
-	router.delete('/remote/notes/:id', async (ctx, next) => {
+	router.delete('/remote/notes/:id', async (ctx) => {
+		const builder = new ResponseBuilder(ctx);
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
 
 		const index = notes.findIndex(x => x.id == id && x.serverId == serverId);
 		if (index == -1) {
-			return await next();
+			return builder.error(404, 'not-found');
 		}
 		notes.splice(index, 1);
 
-		ctx.body = { deleted: true };
-		ctx.status = 200;
+		builder.success(200, { deleted: true });
 	});
 
 	return router.routes();

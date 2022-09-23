@@ -23,10 +23,12 @@
   "dependencies": {
     "@koa/router": "12.0.0",
     "@sinclair/typebox": "0.24.41",
-    "ajv": "^8.11.0",
+    "@types/uuid": "8.3.4",
+    "ajv": "8.11.0",
     "koa": "2.13.4",
     "koa-bodyparser": "4.3.0",
-    "mkdirp": "1.0.4"
+    "mkdirp": "1.0.4",
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@types/koa": "2.13.4",
