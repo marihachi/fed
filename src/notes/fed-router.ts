@@ -56,7 +56,7 @@ export default function() {
 			text: body.text,
 			serverId: serverId,
 		};
-		ctx.state.noteCache.set(key, note);
+		ctx.state.remoteNoteCache.set(key, note);
 
 		builder.success(200, note);
 	});
@@ -68,10 +68,10 @@ export default function() {
 		const id = ctx.params.id;
 
 		const key = buildKey(serverId, id);
-		if (!ctx.state.noteCache.has(key)) {
+		if (!ctx.state.remoteNoteCache.has(key)) {
 			return builder.success(200, { deleted: false });
 		}
-		ctx.state.noteCache.delete(key);
+		ctx.state.remoteNoteCache.delete(key);
 
 		builder.success(200, { deleted: true });
 	});
