@@ -1,8 +1,12 @@
-import { Note } from "./note";
+import { Note } from './note';
 
 function buildKey(serverId: string, noteId: string) {
-	const espacedServerId = serverId.replace('/', '\\/');
-	const espacedNoteId = noteId.replace('/', '\\/');
+	const espacedServerId = serverId
+		.replace('\\', '\\\\')
+		.replace('/', '\\/');
+	const espacedNoteId = noteId
+		.replace('\\', '\\\\')
+		.replace('/', '\\/');
 	return `${espacedServerId}/${espacedNoteId}`;
 }
 

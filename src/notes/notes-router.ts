@@ -3,7 +3,7 @@ import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
 import { v4 as uuid } from 'uuid';
 import { Note } from './note';
-import { ResponseBuilder } from './response-builder';
+import { ResponseBuilder } from '../http/response-builder';
 import { FetchError, NoteFetcher } from './note-fetcher';
 
 // <client APIs>

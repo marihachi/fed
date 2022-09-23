@@ -1,4 +1,4 @@
-import { run } from './server';
+import { run } from './http/server';
 
 const option = {
 	listenPort: 3001
