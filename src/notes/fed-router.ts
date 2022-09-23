@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid';
 import { LocalNote, RemoteNote } from './note';
 import { ResponseBuilder } from '../http-server/response-builder';
 import { HttpServerState } from '../http-server';
-import { buildKey } from './note-fetcher';
+import { buildKey } from './resource-key';
 
 // GET    /local/notes/:id
 // POST   /remote/notes

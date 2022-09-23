@@ -1,14 +1,5 @@
 import { RemoteNote } from './note';
-
-export function buildKey(serverId: string, noteId: string) {
-	const espacedServerId = serverId
-		.replace('\\', '\\\\')
-		.replace('/', '\\/');
-	const espacedNoteId = noteId
-		.replace('\\', '\\\\')
-		.replace('/', '\\/');
-	return `${espacedServerId}/${espacedNoteId}`;
-}
+import { buildKey } from './resource-key';
 
 export class FetchError {
 	reason: string;
