@@ -1,6 +1,6 @@
-import { Note } from './note';
+import { RemoteNote } from './note';
 
-function buildKey(serverId: string, noteId: string) {
+export function buildKey(serverId: string, noteId: string) {
 	const espacedServerId = serverId
 		.replace('\\', '\\\\')
 		.replace('/', '\\/');
@@ -19,20 +19,20 @@ export class FetchError {
 }
 
 export class NoteFetcher {
-	cache: Map<string, Note>;
+	cache: Map<string, RemoteNote>;
 
 	constructor() {
 		this.cache = new Map();
 	}
 
-	fetch(serverId: string, noteId: string): Note | FetchError {
+	fetch(serverId: string, noteId: string): RemoteNote | FetchError {
 		const key = buildKey(serverId, noteId);
 		if (this.cache.has(key)) {
 			return this.cache.get(key)!;
 		}
 		return new FetchError('not-found');
 		// TODO
-		// const note = {} as Note;
+		// const note = {} as RemoteNote;
 		// this.cache.set(key, note);
 		// return note;
 	}

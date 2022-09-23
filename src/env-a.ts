@@ -1,6 +1,10 @@
-import { run } from './http/server';
+import { run } from './http-server';
+import { RemoteNote } from './notes/note';
 
-const option = {
-	listenPort: 3000
+const noteCache: Map<string, RemoteNote> = new Map();
+
+const state = {
+	listenPort: 3000,
+	noteCache: noteCache,
 };
-run(option);
+run(state);

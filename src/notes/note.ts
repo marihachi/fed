@@ -1,5 +1,10 @@
-export type Note = {
+export type LocalNote = {
 	id: string,
 	text: string,
-	serverId?: string;
+};
+
+export type RemoteNote = {
+	id: string,
+	text: string,
+	serverId: string;
 };
