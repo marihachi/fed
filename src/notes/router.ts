@@ -1,11 +1,10 @@
 import Router from '@koa/router';
 import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
-import { v4 as uuid } from 'uuid';
-import { LocalNote } from './note';
-import { ResponseBuilder } from '../http-server/response-builder';
-import { FetchError, NoteFetcher } from './note-fetcher';
 import { HttpServerState } from '../http-server';
+import { ResponseBuilder } from '../http-server/response-builder';
+import { LocalNote, RemoteNote } from './note';
+import { NoteFetcher } from './note-fetcher';
 
 // POST   /notes
 // GET    /notes/:target
@@ -13,7 +12,6 @@ import { HttpServerState } from '../http-server';
 
 export default function() {
 	const router = new Router<HttpServerState>();
-	const localNotes: LocalNote[] = [];
 	const ajv = new Ajv();
 
 	const localNoteUpdateSchema = Type.Object({
@@ -29,16 +27,13 @@ export default function() {
 		}
 		const body = ctx.request.body;
 
-		const noteId = uuid();
-		const index = localNotes.findIndex(x => x.id == noteId);
-		if (index != -1) {
-			return builder.error(400, 'resource-already-exists');
-		}
-		const note: LocalNote = {
-			id: noteId,
+		const result = ctx.state.localNotes.create({
 			text: body.text,
-		};
-		localNotes.push(note);
+		});
+		if (result.error) {
+			return builder.error(500, 'internal-error');
+		}
+		const note: LocalNote = result.result;
 
 		builder.success(200, note);
 	});
@@ -47,29 +42,31 @@ export default function() {
 	router.get('/notes/:target', async (ctx) => {
 		const builder = new ResponseBuilder(ctx);
 		const target = ctx.params.target;
-
-		let server: string | undefined, name: string;
 		let match = /^([^@]+)@([^@]+)$/.exec(target);
 		if (match != null) {
-			name = match[1];
-			server = match[2];
+			const noteId = match[1];
+			const serverId = match[2];
+
+			const fetcher = new NoteFetcher(ctx.state.remoteNoteCaches);
+			const fetchResult = fetcher.fetch(serverId, noteId);
+			if (fetchResult.error) {
+				return builder.error(404, 'not-found');
+			}
+			const note: RemoteNote = fetchResult.result;
+
+			return builder.success(200, note);
 		}
 		else {
-			name = target;
+			const noteId = target;
+
+			const result = ctx.state.localNotes.find(noteId);
+			if (result.error) {
+				return builder.error(404, 'not-found');
+			}
+			const note: LocalNote = result.result;
+
+			return builder.success(200, note);
 		}
-		const index = localNotes.findIndex(x => x.id == name);
-		if (index != -1) {
-			return builder.success(200, localNotes[index]);
-		}
-		if (server == null) {
-			return builder.error(404, 'not-found');
-		}
-		const fetcher = new NoteFetcher(ctx.state.remoteNoteCache);
-		const fetchResult = fetcher.fetch(server, name);
-		if (fetchResult instanceof FetchError) {
-			return builder.error(404, 'not-found');
-		}
-		return fetchResult;
 	});
 
 	// delete a resource
@@ -77,11 +74,10 @@ export default function() {
 		const builder = new ResponseBuilder(ctx);
 		const id = ctx.params.id;
 
-		const index = localNotes.findIndex(x => x.id == id);
-		if (index == -1) {
+		const result = ctx.state.localNotes.delete(id);
+		if (result.error) {
 			return builder.error(404, 'not-found');
 		}
-		localNotes.splice(index, 1);
 
 		builder.success(200, { deleted: true });
 	});

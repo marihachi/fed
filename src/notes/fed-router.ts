@@ -1,11 +1,9 @@
 import Router from '@koa/router';
 import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
-import { v4 as uuid } from 'uuid';
-import { LocalNote, RemoteNote } from './note';
-import { ResponseBuilder } from '../http-server/response-builder';
 import { HttpServerState } from '../http-server';
-import { buildKey } from './resource-key';
+import { ResponseBuilder } from '../http-server/response-builder';
+import { LocalNote, RemoteNote } from './note';
 
 // GET    /local/notes/:id
 // POST   /remote/notes
@@ -13,7 +11,6 @@ import { buildKey } from './resource-key';
 
 export default function() {
 	const router = new Router<HttpServerState>();
-	const notes: LocalNote[] = [];
 	const ajv = new Ajv();
 
 	// outgoing: fetch a resource from local server (need server-authentication)
@@ -22,17 +19,14 @@ export default function() {
 		//const signature = ctx.request.header.signature;
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
-		ctx.state
 
-		const index = notes.findIndex(x => x.id == id);
-		if (index == -1) {
+		const result = ctx.state.localNotes.find(id);
+		if (result.error) {
 			return builder.error(404, 'not-found');
 		}
+		const note: LocalNote = result.result;
 
-		builder.success(200, {
-			id: notes[index].id,
-			text: notes[index].text,
-		});
+		builder.success(200, note);
 	});
 
 	const remoteNoteUpdateSchema = Type.Object({
@@ -50,13 +44,12 @@ export default function() {
 		}
 		const body = ctx.request.body;
 
-		const key = buildKey(serverId, body.id);
-		const note: RemoteNote = {
+		const updateResult = ctx.state.remoteNoteCaches.update({
 			id: body.id,
 			text: body.text,
 			serverId: serverId,
-		};
-		ctx.state.remoteNoteCache.set(key, note);
+		});
+		const note: RemoteNote = updateResult.result;
 
 		builder.success(200, note);
 	});
@@ -67,11 +60,10 @@ export default function() {
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
 
-		const key = buildKey(serverId, id);
-		if (!ctx.state.remoteNoteCache.has(key)) {
+		const result = ctx.state.remoteNoteCaches.delete(serverId, id);
+		if (result.error) {
 			return builder.success(200, { deleted: false });
 		}
-		ctx.state.remoteNoteCache.delete(key);
 
 		builder.success(200, { deleted: true });
 	});

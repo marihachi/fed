@@ -1,10 +1,13 @@
 import { run } from './http-server';
-import { RemoteNote } from './notes/note';
+import { LocalNotes } from './notes/local-notes';
+import { RemoteNoteCaches } from './notes/remote-notes';
 
-const remoteNoteCache: Map<string, RemoteNote> = new Map();
+const localNotes = new LocalNotes();
+const remoteNoteCaches = new RemoteNoteCaches();
 
 const state = {
 	listenPort: 3001,
-	remoteNoteCache: remoteNoteCache,
+	localNotes: localNotes,
+	remoteNoteCaches: remoteNoteCaches,
 };
 run(state);
