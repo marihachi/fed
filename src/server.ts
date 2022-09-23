@@ -1,10 +1,9 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import NotesRouter from './routes/notes';
+import NotesRouter from './notes/notes-router';
 
 export function run(opts: { listenPort: number; }) {
 	const app = new Koa();
-
 	app.use(bodyParser());
 	app.use(NotesRouter());
 

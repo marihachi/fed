@@ -1,41 +1,10 @@
-import Koa from 'koa';
 import Router from '@koa/router';
 import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
 import { v4 as uuid } from 'uuid';
-
-class ResponseBuilder {
-	ctx: Koa.Context;
-
-	constructor(ctx: ResponseBuilder['ctx']) {
-		this.ctx = ctx;
-	}
-
-	success(status: number, body: unknown) {
-		this.ctx.body = body;
-		this.ctx.status = status;
-	}
-
-	error(status: number, message: string) {
-		this.ctx.body = { error: message };
-		this.ctx.status = status;
-	}
-}
-
-type Note = {
-	id: string,
-	text: string,
-	serverId?: string;
-};
-
-const localNoteUpdateSchema = Type.Object({
-	text: Type.String(),
-});
-
-const remoteNoteUpdateSchema = Type.Object({
-	id: Type.String(),
-	text: Type.String(),
-});
+import { Note } from './note';
+import { ResponseBuilder } from './response-builder';
+import { FetchError, NoteFetcher } from './note-fetcher';
 
 // <client APIs>
 // POST   /notes
@@ -51,6 +20,10 @@ export default function() {
 	const router = new Router();
 	const notes: Note[] = [];
 	const ajv = new Ajv();
+
+	const localNoteUpdateSchema = Type.Object({
+		text: Type.String(),
+	});
 
 	// create a resource
 	router.post('/notes', async (ctx) => {
@@ -78,8 +51,8 @@ export default function() {
 	// get a resource
 	router.get('/notes/:target', async (ctx) => {
 		const builder = new ResponseBuilder(ctx);
-
 		const target = ctx.params.target;
+
 		let server: string | undefined, name: string;
 		let match = /^([^@]+)@([^@]+)$/.exec(target);
 		if (match != null) {
@@ -90,15 +63,22 @@ export default function() {
 			name = target;
 		}
 		const index = notes.findIndex(x => x.id == name && x.serverId == server);
-		if (index == -1) {
+		if (index != -1) {
+			return builder.success(200, {
+				id: notes[index].id,
+				text: notes[index].text,
+				serverId: notes[index].serverId,
+			});
+		}
+		if (server == null) {
 			return builder.error(404, 'not-found');
 		}
-
-		builder.success(200, {
-			id: notes[index].id,
-			text: notes[index].text,
-			serverId: notes[index].serverId,
-		});
+		const fetcher = new NoteFetcher();
+		const fetchResult = fetcher.fetch(server, name);
+		if (fetchResult instanceof FetchError) {
+			return builder.error(404, 'not-found');
+		}
+		return fetchResult;
 	});
 
 	// delete a resource
@@ -131,6 +111,11 @@ export default function() {
 			id: notes[index].id,
 			text: notes[index].text,
 		});
+	});
+
+	const remoteNoteUpdateSchema = Type.Object({
+		id: Type.String(),
+		text: Type.String(),
 	});
 
 	// incoming: update resource event (need server-authentication)
