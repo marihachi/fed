@@ -11,9 +11,6 @@ yarn-error.log*
 # logs
 *.log
 
-# editor
-.vscode
-
 # app
 built
 temp
