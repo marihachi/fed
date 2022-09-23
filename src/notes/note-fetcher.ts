@@ -21,8 +21,8 @@ export class FetchError {
 export class NoteFetcher {
 	cache: Map<string, RemoteNote>;
 
-	constructor() {
-		this.cache = new Map();
+	constructor(catche: Map<string, RemoteNote>) {
+		this.cache = catche;
 	}
 
 	fetch(serverId: string, noteId: string): RemoteNote | FetchError {

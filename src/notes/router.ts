@@ -64,7 +64,7 @@ export default function() {
 		if (server == null) {
 			return builder.error(404, 'not-found');
 		}
-		const fetcher = new NoteFetcher();
+		const fetcher = new NoteFetcher(ctx.state.noteCache);
 		const fetchResult = fetcher.fetch(server, name);
 		if (fetchResult instanceof FetchError) {
 			return builder.error(404, 'not-found');
