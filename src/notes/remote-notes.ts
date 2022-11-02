@@ -8,7 +8,7 @@ export class RemoteNoteCaches {
 		this.cache = new Map();
 	}
 
-	update(param: { id: string, text: string, serverId: string }) {
+	update(param: { id: string, text: string, serverId: string }): RemoteNote {
 		const key = buildKey(param.serverId, param.id);
 		const note: RemoteNote = {
 			id: param.id,
@@ -16,25 +16,22 @@ export class RemoteNoteCaches {
 			serverId: param.serverId,
 		};
 		this.cache.set(key, note);
-		return { result: note };
+		return note;
 	}
 
-	find(serverId: string, noteId: string) {
+	find(serverId: string, noteId: string): RemoteNote {
 		const key = buildKey(serverId, noteId);
 		if (!this.cache.has(key)) {
-			return { error: 'not-found' as const };
+			throw new Error('not-found');
 		}
-		return { result: this.cache.get(key)! };
+		return this.cache.get(key)!;
 	}
 
-	delete(serverId: string, noteId: string) {
-		
+	delete(serverId: string, noteId: string): void {
 		const key = buildKey(serverId, noteId);
 		if (!this.cache.has(key)) {
-			return { error: 'not-found' as const };
+			throw new Error('not-found');
 		}
 		this.cache.delete(key);
-
-		return { result: true };
 	}
 }

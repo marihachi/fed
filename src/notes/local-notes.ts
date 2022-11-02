@@ -8,35 +8,33 @@ export class LocalNotes {
 		this.notes = [];
 	}
 
-	create(param: { text: string }) {
+	create(param: { text: string }): LocalNote {
 		const noteId = uuid();
 		const index = this.notes.findIndex(x => x.id == noteId);
 		if (index != -1) {
-			return { error: 'resource-id-duplicated' as const };
+			throw new Error('resource-id-duplicated');
 		}
 		const note: LocalNote = {
 			id: noteId,
 			text: param.text,
 		};
 		this.notes.push(note);
-
-		return { result: note };
+		return note;
 	}
 
-	find(noteId: string) {
+	find(noteId: string): LocalNote {
 		const index = this.notes.findIndex(x => x.id == noteId);
 		if (index == -1) {
-			return { error: 'not-found' as const };
+			throw new Error('not-found');
 		}
-		return { result: this.notes[index] };
+		return this.notes[index];
 	}
 
-	delete(noteId: string) {
+	delete(noteId: string): void {
 		const index = this.notes.findIndex(x => x.id == noteId);
 		if (index == -1) {
-			return { error: 'not-found' as const };
+			throw new Error('not-found');
 		}
 		this.notes.splice(index, 1);
-		return { result: true };
 	}
 }

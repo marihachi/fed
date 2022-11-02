@@ -1,10 +1,10 @@
 import Router from '@koa/router';
 import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
-import { HttpServerState } from '../http-server';
-import { ResponseBuilder } from '../http-server/response-builder';
-import { LocalNote, RemoteNote } from './note';
-import { NoteFetcher } from './note-fetcher';
+import { HttpServerState } from '.';
+import { ResponseBuilder } from './response-builder';
+import { LocalNote, RemoteNote } from '../notes/note';
+import { NoteFetcher } from '../notes/note-fetcher';
 
 // POST   /notes
 // GET    /notes/:target
@@ -23,17 +23,21 @@ export default function() {
 		const builder = new ResponseBuilder(ctx);
 
 		if (!ajv.validate(localNoteUpdateSchema, ctx.request.body)) {
-			return builder.error(400, 'invalid-params');
+			builder.error(400, 'invalid-params');
+			return;
 		}
 		const body = ctx.request.body;
 
-		const result = ctx.state.localNotes.create({
-			text: body.text,
-		});
-		if (result.error) {
-			return builder.error(500, 'internal-error');
+		let note: LocalNote;
+		try {
+			note = ctx.state.localNotes.create({
+				text: body.text,
+			});
 		}
-		const note: LocalNote = result.result;
+		catch (err) {
+			builder.error(500, 'internal-error');
+			return;
+		}
 
 		builder.success(200, note);
 	});
@@ -46,26 +50,32 @@ export default function() {
 		if (match != null) {
 			const noteId = match[1];
 			const serverId = match[2];
-
 			const fetcher = new NoteFetcher(ctx.state.remoteNoteCaches);
-			const fetchResult = fetcher.fetch(serverId, noteId);
-			if (fetchResult.error) {
-				return builder.error(404, 'not-found');
-			}
-			const note: RemoteNote = fetchResult.result;
 
-			return builder.success(200, note);
+			let fetchedNote: RemoteNote;
+			try {
+				fetchedNote = fetcher.fetch(serverId, noteId);
+			}
+			catch (err) {
+				builder.error(404, 'not-found');
+				return;
+			}
+
+			builder.success(200, fetchedNote);
 		}
 		else {
 			const noteId = target;
 
-			const result = ctx.state.localNotes.find(noteId);
-			if (result.error) {
-				return builder.error(404, 'not-found');
+			let note: LocalNote;
+			try {
+				note = ctx.state.localNotes.find(noteId);
 			}
-			const note: LocalNote = result.result;
+			catch (err) {
+				builder.error(404, 'not-found');
+				return;
+			}
 
-			return builder.success(200, note);
+			builder.success(200, note);
 		}
 	});
 
@@ -74,9 +84,12 @@ export default function() {
 		const builder = new ResponseBuilder(ctx);
 		const id = ctx.params.id;
 
-		const result = ctx.state.localNotes.delete(id);
-		if (result.error) {
-			return builder.error(404, 'not-found');
+		try {
+			ctx.state.localNotes.delete(id);
+		}
+		catch (err) {
+			builder.error(404, 'not-found');
+			return;
 		}
 
 		builder.success(200, { deleted: true });

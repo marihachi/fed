@@ -1,9 +1,9 @@
 import Router from '@koa/router';
 import Ajv from 'ajv';
 import { Type } from '@sinclair/typebox';
-import { HttpServerState } from '../http-server';
-import { ResponseBuilder } from '../http-server/response-builder';
-import { LocalNote, RemoteNote } from './note';
+import { HttpServerState } from '.';
+import { ResponseBuilder } from './response-builder';
+import { LocalNote, RemoteNote } from '../notes/note';
 
 // GET    /local/notes/:id
 // POST   /remote/notes
@@ -20,11 +20,14 @@ export default function() {
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
 
-		const result = ctx.state.localNotes.find(id);
-		if (result.error) {
-			return builder.error(404, 'not-found');
+		let note: LocalNote;
+		try {
+			note = ctx.state.localNotes.find(id);
 		}
-		const note: LocalNote = result.result;
+		catch (err) {
+			builder.error(404, 'not-found');
+			return;
+		}
 
 		builder.success(200, note);
 	});
@@ -40,16 +43,23 @@ export default function() {
 		const serverId = 'b'; // TODO: authentication
 
 		if (!ajv.validate(remoteNoteUpdateSchema, ctx.request.body)) {
-			return builder.error(400, 'invalid-params');
+			builder.error(400, 'invalid-params');
+			return;
 		}
 		const body = ctx.request.body;
 
-		const updateResult = ctx.state.remoteNoteCaches.update({
-			id: body.id,
-			text: body.text,
-			serverId: serverId,
-		});
-		const note: RemoteNote = updateResult.result;
+		let note: RemoteNote;
+		try {
+			note = ctx.state.remoteNoteCaches.update({
+				id: body.id,
+				text: body.text,
+				serverId: serverId,
+			});
+		}
+		catch (err) {
+			builder.error(500, 'internal-error');
+			return;
+		}
 
 		builder.success(200, note);
 	});
@@ -60,9 +70,12 @@ export default function() {
 		const serverId = 'b'; // TODO: authentication
 		const id = ctx.params.id;
 
-		const result = ctx.state.remoteNoteCaches.delete(serverId, id);
-		if (result.error) {
-			return builder.success(200, { deleted: false });
+		try {
+			ctx.state.remoteNoteCaches.delete(serverId, id);
+		}
+		catch (err) {
+			builder.success(200, { deleted: false });
+			return;
 		}
 
 		builder.success(200, { deleted: true });

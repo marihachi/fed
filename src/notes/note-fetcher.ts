@@ -9,11 +9,14 @@ export class NoteFetcher {
 	}
 
 	fetch(serverId: string, noteId: string) {
-		const cache = this.caches.find(serverId, noteId);
-		if (!cache.error) {
+		let cache: RemoteNote;
+		try {
+			cache = this.caches.find(serverId, noteId);
 			return cache;
 		}
-		return cache;
+		catch (err) {
+			throw new Error('not-implement');
+		}
 		// TODO
 		// const note = {} as RemoteNote;
 		// this.caches.update({
