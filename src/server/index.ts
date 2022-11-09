@@ -1,14 +1,10 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import notesRouter from './router';
-import notesFedRouter from './fed-router';
-import { LocalNotes } from '../notes/local-notes';
-import { RemoteNoteCaches } from '../notes/remote-notes';
-
-export type HttpServerState = {
-	localNotes: LocalNotes;
-	remoteNoteCaches: RemoteNoteCaches;
-};
+import { LocalNotes } from '../services/local-notes';
+import { RemoteNoteCaches } from '../services/remote-notes';
+import notesFedRouter from './routers/fed-router';
+import notesRouter from './routers/note-router';
+import { HttpServerState } from './server-state';
 
 export function run(state: { listenPort: number; localNotes: LocalNotes; remoteNoteCaches: RemoteNoteCaches; }) {
 	const app = new Koa();

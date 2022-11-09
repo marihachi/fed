@@ -1,4 +1,4 @@
-import { RemoteNote } from './note';
+import { RemoteNote } from '../models/note';
 import { buildKey } from './resource-key';
 
 export class RemoteNoteCaches {

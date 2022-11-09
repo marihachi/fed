@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { LocalNote } from './note';
+import { LocalNote } from '../models/note';
 
 export class LocalNotes {
 	notes: LocalNote[];
