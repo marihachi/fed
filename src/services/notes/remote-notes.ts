@@ -1,5 +1,5 @@
-import { RemoteNote } from '../models/note';
-import { buildKey } from './resource-key';
+import { buildKey } from '../resource-key';
+import { RemoteNote } from './note';
 
 export class RemoteNoteCaches {
 	cache: Map<string, RemoteNote>;

@@ -1,6 +1,6 @@
-import { run } from './server';
-import { LocalNotes } from './services/local-notes';
-import { RemoteNoteCaches } from './services/remote-notes';
+import { LocalNotes } from './services/notes/local-notes';
+import { RemoteNoteCaches } from './services/notes/remote-notes';
+import { run } from './services/server';
 
 const localNotes = new LocalNotes();
 const remoteNoteCaches = new RemoteNoteCaches();

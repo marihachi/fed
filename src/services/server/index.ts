@@ -1,7 +1,7 @@
 import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
-import { LocalNotes } from '../services/local-notes';
-import { RemoteNoteCaches } from '../services/remote-notes';
+import { LocalNotes } from '../notes/local-notes';
+import { RemoteNoteCaches } from '../notes/remote-notes';
 import notesFedRouter from './routers/fed-router';
 import notesRouter from './routers/note-router';
 import { HttpServerState } from './server-state';

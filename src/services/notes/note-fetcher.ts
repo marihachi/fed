@@ -1,4 +1,4 @@
-import { RemoteNote } from '../models/note';
+import { RemoteNote } from './note';
 import { RemoteNoteCaches } from './remote-notes';
 
 export class NoteFetcher {
