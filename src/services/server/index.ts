@@ -2,8 +2,8 @@ import Koa from 'koa';
 import bodyParser from 'koa-bodyparser';
 import { LocalNotes } from '../notes/local-notes';
 import { RemoteNoteCaches } from '../notes/remote-notes';
-import notesFedRouter from './routers/fed-router';
-import notesRouter from './routers/note-router';
+import notesFedRouter from './fed-router';
+import notesRouter from './note-router';
 import { HttpServerState } from './server-state';
 
 export function run(state: { listenPort: number; localNotes: LocalNotes; remoteNoteCaches: RemoteNoteCaches; }) {

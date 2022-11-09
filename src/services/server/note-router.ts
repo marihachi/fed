@@ -1,10 +1,10 @@
 import Router from '@koa/router';
 import { Type } from '@sinclair/typebox';
 import Ajv from 'ajv';
-import { LocalNote, RemoteNote } from '../../notes/note';
-import { NoteFetcher } from '../../notes/note-fetcher';
-import { ResponseBuilder } from '../response-builder';
-import { HttpServerState } from '../server-state';
+import { LocalNote, RemoteNote } from '../notes/note';
+import { NoteFetcher } from '../notes/note-fetcher';
+import { ResponseBuilder } from './response-builder';
+import { HttpServerState } from './server-state';
 
 // POST   /notes
 // GET    /notes/:target
