@@ -1,6 +1,6 @@
 WIP
 
-# Server Meta-data Specification
+# Server Metadata Specification
 
 ## サーバーにあるエンドポイントの認識
 TODO

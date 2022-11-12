@@ -1,3 +1,3 @@
-## Specification
-- [(draft 1)](./specification/draft-1/doc-wip)
-- [(draft 2) The fed Specifications](./specification/draft-2/index)
+## Specifications
+- [Core Specification](./specification/draft-2/core-spec.md)
+- [Server Metadata Specification](./specification/draft-2/metadata-spec.md)
