@@ -57,7 +57,7 @@ export default function() {
 				fetchedNote = await fetcher.fetch(serverId, noteId);
 			}
 			catch (err) {
-				console.error(err.message);
+				//console.error(err.message);
 				builder.error(404, 'not-found');
 				return;
 			}
@@ -76,7 +76,7 @@ export default function() {
 				note = ctx.state.localNotes.find(noteId);
 			}
 			catch (err) {
-				console.error(err.message);
+				//console.error(err.message);
 				builder.error(404, 'not-found');
 				return;
 			}

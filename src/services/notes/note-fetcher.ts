@@ -32,14 +32,13 @@ export class NoteFetcher {
 			res = await Axios.get(`${baseUrl}${path}`);
 		}
 		catch (err) {
-			console.error(err.message);
+			//console.error(err.message);
 			throw new Error('fetch-failed');
 		}
 
 		// validate resource
 		if (!this.ajv.validate(remoteNoteSchema, res.data)) {
-			console.log('validation failed:');
-			console.log(res.data);
+			//console.log(res.data);
 			throw new Error('invalid-data');
 		}
 		const note: RemoteNote = res.data;
