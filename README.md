@@ -1,7 +1,7 @@
 # fed
 A server-to-server resource federation protocol.
 
-[Newest draft](./docs/specification/index.md)
+[Specifications](./docs/index.md)
 
 ## Build the reference implementation
 ```
