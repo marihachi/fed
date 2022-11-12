@@ -54,14 +54,19 @@ export default function() {
 
 			let fetchedNote: RemoteNote;
 			try {
-				fetchedNote = fetcher.fetch(serverId, noteId);
+				fetchedNote = await fetcher.fetch(serverId, noteId);
 			}
 			catch (err) {
+				console.error(err.message);
 				builder.error(404, 'not-found');
 				return;
 			}
 
-			builder.success(200, fetchedNote);
+			const result: LocalNote = {
+				id: fetchedNote.id,
+				text: fetchedNote.text,
+			};
+			builder.success(200, result);
 		}
 		else {
 			const noteId = target;
@@ -71,6 +76,7 @@ export default function() {
 				note = ctx.state.localNotes.find(noteId);
 			}
 			catch (err) {
+				console.error(err.message);
 				builder.error(404, 'not-found');
 				return;
 			}

@@ -9,5 +9,6 @@ const state = {
 	listenPort: 3001,
 	localNotes: localNotes,
 	remoteNoteCaches: remoteNoteCaches,
+	serverId: 'b',
 };
 run(state);

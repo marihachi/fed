@@ -25,11 +25,17 @@ export default function() {
 			note = ctx.state.localNotes.find(id);
 		}
 		catch (err) {
+			console.error(err.message);
 			builder.error(404, 'not-found');
 			return;
 		}
 
-		builder.success(200, note);
+		const remoteNote: RemoteNote = {
+			id: note.id,
+			text: note.text,
+			serverId: ctx.state.serverId,
+		};
+		builder.success(200, remoteNote);
 	});
 
 	const remoteNoteUpdateSchema = Type.Object({

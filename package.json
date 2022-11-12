@@ -8,7 +8,8 @@
   },
   "scripts": {
     "build": "tsc",
-    "start-a": "node ./built/env-a"
+    "start-a": "node ./built/env-a",
+    "start-b": "node ./built/env-b"
   },
   "repository": {
     "type": "git",
